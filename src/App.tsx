@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
+import { InputCheckbox, InputCheckboxProps } from './components/input-checkbox';
 
 const checkboxesLabels = ['read', 'write', 'delete'] as const;
-type CheckboxLabel = typeof checkboxesLabels[number];
+export type CheckboxLabel = typeof checkboxesLabels[number];
 
 type CheckboxesState = Record<CheckboxLabel, boolean>;
 
@@ -41,12 +42,8 @@ function App() {
   const handleCheckboxChange = ({
     rowId,
     key,
-    value,
-  }: {
-    rowId: number;
-    key: CheckboxLabel;
-    value: boolean;
-  }): void => {
+    updatedValue,
+  }: Parameters<InputCheckboxProps['onCheckboxChange']>[0]): void => {
     setMainState((prevMainState) => {
       const updatedMainState = new Map(prevMainState);
       const previousCheckboxesState = updatedMainState.get(rowId);
@@ -55,7 +52,7 @@ function App() {
         return prevMainState;
       }
 
-      updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: value });
+      updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: updatedValue });
 
       return updatedMainState;
     });
@@ -73,8 +70,8 @@ function App() {
               gridTemplateColumns: 'repeat(3, auto)',
             }}
           >
-            {Object.entries(checkboxes).map(([cbKey, cbValue], _: number) => {
-              const currentKey = cbKey as CheckboxLabel;
+            {Object.entries(checkboxes).map(([key, value], _: number) => {
+              const currentKey = key as CheckboxLabel;
               const label =
                 currentKey === 'read'
                   ? 'Read'
@@ -83,21 +80,15 @@ function App() {
                   : 'Delete';
 
               return (
-                <div key={`cb-${cbKey}`} style={{ margin: '0 0.5rem' }}>
-                  <label htmlFor={cbKey}>{label}</label>
-                  <input
-                    type='checkbox'
-                    name={cbKey}
-                    checked={cbValue}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleCheckboxChange({
-                        rowId,
-                        key: currentKey,
-                        value: e.target.checked,
-                      })
-                    }
-                  />
-                </div>
+                <InputCheckbox
+                  key={`cb-${currentKey}`}
+                  checkboxKey={currentKey}
+                  additionalStyle={{ margin: '0 0.5rem' }}
+                  checked={value}
+                  label={label}
+                  rowId={rowId}
+                  onCheckboxChange={handleCheckboxChange}
+                />
               );
             })}
           </div>
