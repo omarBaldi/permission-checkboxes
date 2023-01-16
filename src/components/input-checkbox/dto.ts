@@ -2,7 +2,7 @@ import React from 'react';
 import { CheckboxLabel } from '../../App';
 
 type InputCheckboxProps = {
-  rowId: number;
+  rowId?: number;
   checkboxKey: CheckboxLabel;
   label: string;
   checked: boolean;
@@ -12,7 +12,7 @@ type InputCheckboxProps = {
     key,
     updatedValue,
   }: {
-    rowId: number;
+    rowId?: number;
     key: CheckboxLabel;
     updatedValue: boolean;
   }) => void;

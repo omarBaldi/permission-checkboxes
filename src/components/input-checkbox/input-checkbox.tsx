@@ -13,7 +13,7 @@ const InputCheckbox: FC<InputCheckboxProps> = ({
     const { checked: updatedCheckedValue } = e.target;
 
     const updatedParams: Parameters<typeof onCheckboxChange>[0] = {
-      rowId,
+      ...(typeof rowId === 'number' && { rowId }),
       key: checkboxKey,
       updatedValue: updatedCheckedValue,
     };

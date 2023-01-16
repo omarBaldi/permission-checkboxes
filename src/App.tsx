@@ -45,6 +45,8 @@ function App() {
       key,
       updatedValue,
     }: Parameters<InputCheckboxProps['onCheckboxChange']>[0]): void => {
+      if (typeof rowId === 'undefined') return;
+
       setMainState((prevMainState) => {
         const updatedMainState = new Map(prevMainState);
         const previousCheckboxesState = updatedMainState.get(rowId);
@@ -73,8 +75,44 @@ function App() {
     []
   );
 
+  const handleCheckboxAllChange = useCallback(
+    ({
+      key,
+      updatedValue,
+    }: Parameters<InputCheckboxProps['onCheckboxChange']>[0]): void => {
+      setMainState((prevMainState) => {
+        const updatedMainState = new Map(
+          [...prevMainState].map(([rowId, checkboxes]) => {
+            return [rowId, { ...checkboxes, [key]: updatedValue }];
+          })
+        );
+
+        return updatedMainState;
+      });
+    },
+    []
+  );
+
+  const isReadAllChecked: boolean = [...mainState.values()]
+    .reduce<boolean[]>((acc, curr) => {
+      const value = curr.read;
+      return [...acc, value];
+    }, [])
+    .every(Boolean);
+
   return (
     <div className='App'>
+      <div>
+        <InputCheckbox
+          checkboxKey='read'
+          checked={isReadAllChecked}
+          label='Read all'
+          onCheckboxChange={handleCheckboxAllChange}
+        />
+      </div>
+
+      <hr />
+
       {[...mainState].map(([rowId, checkboxes]: [number, CheckboxesState], _: number) => {
         return (
           <div
