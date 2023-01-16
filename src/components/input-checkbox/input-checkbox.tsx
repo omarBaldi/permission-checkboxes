@@ -29,4 +29,4 @@ const InputCheckbox: FC<InputCheckboxProps> = ({
   );
 };
 
-export default InputCheckbox;
+export default React.memo(InputCheckbox);

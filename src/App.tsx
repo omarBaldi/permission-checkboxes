@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { InputCheckbox, InputCheckboxProps } from './components/input-checkbox';
 
@@ -39,24 +39,27 @@ function App() {
     };
   }, []);
 
-  const handleCheckboxChange = ({
-    rowId,
-    key,
-    updatedValue,
-  }: Parameters<InputCheckboxProps['onCheckboxChange']>[0]): void => {
-    setMainState((prevMainState) => {
-      const updatedMainState = new Map(prevMainState);
-      const previousCheckboxesState = updatedMainState.get(rowId);
+  const handleCheckboxChange = useCallback(
+    ({
+      rowId,
+      key,
+      updatedValue,
+    }: Parameters<InputCheckboxProps['onCheckboxChange']>[0]): void => {
+      setMainState((prevMainState) => {
+        const updatedMainState = new Map(prevMainState);
+        const previousCheckboxesState = updatedMainState.get(rowId);
 
-      if (typeof previousCheckboxesState === 'undefined') {
-        return prevMainState;
-      }
+        if (typeof previousCheckboxesState === 'undefined') {
+          return prevMainState;
+        }
 
-      updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: updatedValue });
+        updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: updatedValue });
 
-      return updatedMainState;
-    });
-  };
+        return updatedMainState;
+      });
+    },
+    []
+  );
 
   return (
     <div className='App'>
@@ -83,7 +86,6 @@ function App() {
                 <InputCheckbox
                   key={`cb-${currentKey}`}
                   checkboxKey={currentKey}
-                  additionalStyle={{ margin: '0 0.5rem' }}
                   checked={value}
                   label={label}
                   rowId={rowId}
