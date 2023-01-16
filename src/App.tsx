@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 
 const checkboxesLabels = ['read', 'write', 'delete'] as const;
@@ -38,6 +38,29 @@ function App() {
     };
   }, []);
 
+  const handleCheckboxChange = ({
+    rowId,
+    key,
+    value,
+  }: {
+    rowId: number;
+    key: CheckboxLabel;
+    value: boolean;
+  }): void => {
+    setMainState((prevMainState) => {
+      const updatedMainState = new Map(prevMainState);
+      const previousCheckboxesState = updatedMainState.get(rowId);
+
+      if (typeof previousCheckboxesState === 'undefined') {
+        return prevMainState;
+      }
+
+      updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: value });
+
+      return updatedMainState;
+    });
+  };
+
   return (
     <div className='App'>
       {[...mainState].map(([rowId, checkboxes]: [number, CheckboxesState], _: number) => {
@@ -62,7 +85,18 @@ function App() {
               return (
                 <div key={`cb-${cbKey}`} style={{ margin: '0 0.5rem' }}>
                   <label htmlFor={cbKey}>{label}</label>
-                  <input type='checkbox' name={cbKey} checked={cbValue} />
+                  <input
+                    type='checkbox'
+                    name={cbKey}
+                    checked={cbValue}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleCheckboxChange({
+                        rowId,
+                        key: currentKey,
+                        value: e.target.checked,
+                      })
+                    }
+                  />
                 </div>
               );
             })}
