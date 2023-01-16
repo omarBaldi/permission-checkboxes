@@ -13,7 +13,7 @@ type InputCheckboxProps = {
     updatedValue,
   }: {
     rowId: number;
-    key: string;
+    key: CheckboxLabel;
     updatedValue: boolean;
   }) => void;
 };

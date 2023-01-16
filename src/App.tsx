@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import './App.css';
 import { InputCheckbox, InputCheckboxProps } from './components/input-checkbox';
+import './App.css';
 
 const checkboxesLabels = ['read', 'write', 'delete'] as const;
 export type CheckboxLabel = typeof checkboxesLabels[number];
@@ -53,7 +53,19 @@ function App() {
           return prevMainState;
         }
 
-        updatedMainState.set(rowId, { ...previousCheckboxesState, [key]: updatedValue });
+        updatedMainState.set(
+          rowId,
+          key === 'delete'
+            ? {
+                ...Object.fromEntries(
+                  Object.entries(previousCheckboxesState).map(([key, _]) => [
+                    [key],
+                    updatedValue,
+                  ])
+                ),
+              }
+            : { ...previousCheckboxesState, [key]: updatedValue }
+        );
 
         return updatedMainState;
       });
