@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { InputCheckbox, InputCheckboxProps } from './components/input-checkbox';
 import './App.css';
 
@@ -93,25 +93,42 @@ function App() {
     []
   );
 
-  const isReadAllChecked: boolean = [...mainState.values()]
-    .reduce<boolean[]>((acc, curr) => {
-      const value = curr.read;
-      return [...acc, value];
-    }, [])
-    .every(Boolean);
+  const isReadAllChecked = [...mainState.values()].every((v) => v.read);
+  const isWriteAllChecked = [...mainState.values()].every((v) => v.write);
+  const isDeleteAllChecked = [...mainState.values()].every((v) => v.delete);
 
   return (
     <div className='App'>
-      <div>
-        <InputCheckbox
-          checkboxKey='read'
-          checked={isReadAllChecked}
-          label='Read all'
-          onCheckboxChange={handleCheckboxAllChange}
-        />
-      </div>
+      <React.Fragment>
+        <div
+          style={{
+            marginBottom: '2rem',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+          }}
+        >
+          <InputCheckbox
+            checkboxKey='read'
+            checked={isReadAllChecked}
+            label='Read all'
+            onCheckboxChange={handleCheckboxAllChange}
+          />
+          <InputCheckbox
+            checkboxKey='write'
+            checked={isWriteAllChecked}
+            label='Write all'
+            onCheckboxChange={handleCheckboxAllChange}
+          />
+          <InputCheckbox
+            checkboxKey='delete'
+            checked={isDeleteAllChecked}
+            label='Delete all'
+            onCheckboxChange={handleCheckboxAllChange}
+          />
+        </div>
 
-      <hr />
+        <hr />
+      </React.Fragment>
 
       {[...mainState].map(([rowId, checkboxes]: [number, CheckboxesState], _: number) => {
         return (
