@@ -83,7 +83,14 @@ function App() {
       setMainState((prevMainState) => {
         const updatedMainState = new Map(
           [...prevMainState].map(([rowId, checkboxes]) => {
-            return [rowId, { ...checkboxes, [key]: updatedValue }];
+            const updatedCheckboxes =
+              key === 'delete'
+                ? Object.fromEntries(
+                    Object.entries(checkboxes).map(([key, _]) => [[key], updatedValue])
+                  )
+                : { ...checkboxes, [key]: updatedValue };
+
+            return [rowId, updatedCheckboxes];
           })
         );
 
@@ -99,12 +106,11 @@ function App() {
 
   return (
     <div className='App'>
-      <React.Fragment>
+      <div style={{ marginBottom: '2rem' }}>
         <div
           style={{
-            marginBottom: '2rem',
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(3, minmax(50px, 100px))',
           }}
         >
           <InputCheckbox
@@ -128,7 +134,7 @@ function App() {
         </div>
 
         <hr />
-      </React.Fragment>
+      </div>
 
       {[...mainState].map(([rowId, checkboxes]: [number, CheckboxesState], _: number) => {
         return (
@@ -137,7 +143,7 @@ function App() {
             style={{
               margin: '0.5rem 0',
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, auto)',
+              gridTemplateColumns: 'repeat(3, minmax(50px, 100px))',
             }}
           >
             {Object.entries(checkboxes).map(([key, value], _: number) => {
