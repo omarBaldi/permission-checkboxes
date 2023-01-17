@@ -93,9 +93,9 @@ function App() {
     []
   );
 
-  const isReadAllChecked = [...mainState.values()].every((v) => v.read);
-  const isWriteAllChecked = [...mainState.values()].every((v) => v.write);
-  const isDeleteAllChecked = [...mainState.values()].every((v) => v.delete);
+  const isCheckboxAllChecked = (type: CheckboxLabel): boolean => {
+    return [...mainState.values()].every((v) => v[type]);
+  };
 
   return (
     <div className='App'>
@@ -109,19 +109,19 @@ function App() {
         >
           <InputCheckbox
             checkboxKey='read'
-            checked={isReadAllChecked}
+            checked={isCheckboxAllChecked('read')}
             label='Read all'
             onCheckboxChange={handleCheckboxAllChange}
           />
           <InputCheckbox
             checkboxKey='write'
-            checked={isWriteAllChecked}
+            checked={isCheckboxAllChecked('write')}
             label='Write all'
             onCheckboxChange={handleCheckboxAllChange}
           />
           <InputCheckbox
             checkboxKey='delete'
-            checked={isDeleteAllChecked}
+            checked={isCheckboxAllChecked('delete')}
             label='Delete all'
             onCheckboxChange={handleCheckboxAllChange}
           />
